@@ -25,7 +25,7 @@ def check_bullet_alien_collisions(ai_settings, screen, ship, aliens, bullets):
         bullets.empty()
         create_fleet(ai_settings, screen, ship, aliens)
 
-def check_events(ai_settings, screen, stats, play_button, ship, bullets):
+def check_events(ai_settings, screen, stats, play_button, ship, aliens, bullets):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,12 +36,27 @@ def check_events(ai_settings, screen, stats, play_button, ship, bullets):
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y)
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     """Start a new game when the player clicks Play."""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+
+        # Hide the mouse cursor.
+        pygame.mouse.set_visible(False)
+
+        # Reset the game statistics.
+        stats.reset_stats()
         stats.game_active = True
+
+        # Empty the list of aliens and bullets.
+        aliens.empty()
+        bullets.empty()
+
+         # Create a new fleet and center the ship.
+        create_fleet(ai_settings, screen, ship, aliens)
+        ship.center_ship()
 
 def change_fleet_direction(ai_settings, aliens):
     """Drop the entire fleet, and change the fleet's direction."""
@@ -155,6 +170,7 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
         stats.ships_left -= 1
     else:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
 
     # Empty the list of aliens and bullets.
     aliens.empty()
