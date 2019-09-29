@@ -1,12 +1,12 @@
 import pygame
 from pygame.sprite import Group
 
-from scripts import settings
-from scripts import game_stats
-from scripts import scoreboard
-from scripts import button
-from scripts import ship
-from scripts import game_functions as gf
+from settings import Settings
+from game_stats import GameStats
+from scoreboard import Scoreboard
+from button import Button
+from ship import Ship
+import game_functions as gf
 
 def run_game():
     # Initialize pygame, settings, and screen object.
